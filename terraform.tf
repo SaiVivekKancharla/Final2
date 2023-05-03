@@ -9,7 +9,7 @@ provider "aws" {
 
 
 resource "aws_iam_role" "lambda_role" {
- name   = "fi2_role"
+ name   = "fi3_role"
  assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -19,8 +19,21 @@ resource "aws_iam_role" "lambda_role" {
       "Principal": {
         "Service": "lambda.amazonaws.com"
       },
+      {
       "Effect": "Allow",
-      "Sid": ""
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "*"
+      }
+      {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::fi3/*"
+        }
     }
   ]
 }
@@ -31,7 +44,7 @@ EOF
 
 resource "aws_iam_policy" "iam_policy_for_lambda" {
 
-  name         = "fi2_policy"
+  name         = "fi3_policy"
   path         = "/"
   description  = "AWS IAM Policy for managing aws lambda role"
   policy = <<EOF
@@ -70,7 +83,7 @@ data "archive_file" "zip_the_python_code" {
 # In terraform ${path.module} is the current directory.
 resource "aws_lambda_function" "terraform_lambda_func" {
  filename                       = "${path.module}/python/python1.zip"
- function_name                  = "fi2_futn"
+ function_name                  = "fi3_futn"
  role                           = aws_iam_role.lambda_role.arn
  handler                        = "python1.lambda_handler"
  runtime                        = "python3.7"
@@ -80,7 +93,7 @@ resource "aws_lambda_function" "terraform_lambda_func" {
 
 resource "aws_s3_bucket" "listbucket" {
     
-bucket = "fi2"
+bucket = "fi3"
 acl = "private"
 
 versioning {

@@ -27,7 +27,7 @@ resource "aws_iam_role" "lambda_role" {
                 "logs:PutLogEvents"
             ],
             "Resource": "*"
-      }
+      },
       {
             "Sid": "VisualEditor0",
             "Effect": "Allow",
